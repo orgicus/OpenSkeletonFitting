@@ -313,12 +313,12 @@ namespace osf
 			double addSize = 0;
 			
 			if (i == 0) {
-				minimize(&Payload(joint, 0), funcPos, 1, 1, &addPos.x, tol, iterFac, factor, eps);
-				minimize(&Payload(joint, 1), funcPos, 1, 1, &addPos.y, tol, iterFac, factor, eps);
-				minimize(&Payload(joint, 2), funcPos, 1, 1, &addPos.z, tol, iterFac, factor, eps);
+				minimize(Payload(joint, 0), funcPos, 1, 1, &addPos.x, tol, iterFac, factor, eps);
+				minimize(Payload(joint, 1), funcPos, 1, 1, &addPos.y, tol, iterFac, factor, eps);
+				minimize(Payload(joint, 2), funcPos, 1, 1, &addPos.z, tol, iterFac, factor, eps);
 
 				if (m_minimizeSize)
-					minimize(&Payload(joint, 2), funcSize, 1, 1, &addSize, tol, iterFac, factor, eps);
+					minimize(Payload(joint, 2), funcSize, 1, 1, &addSize, tol, iterFac, factor, eps);
 			}
 			else {
 				/*minimizeSteepestDesc(&Payload(joint, 0), funcPos, 1, 1, &addPos.x);
@@ -350,9 +350,9 @@ namespace osf
 				cv::Point3d addRot(0, 0, 0);
 			
 				if (i == 0) {
-					minimize(&Payload(joint, 0), funcBAS, 1, 1, &addRot.x, tol, iterFac, factor, eps);
-					minimize(&Payload(joint, 1), funcBAS, 1, 1, &addRot.y, tol, iterFac, factor, eps);
-					minimize(&Payload(joint, 2), funcBAS, 1, 1, &addRot.z, tol, iterFac, factor, eps);
+					minimize(Payload(joint, 0), funcBAS, 1, 1, &addRot.x, tol, iterFac, factor, eps);
+					minimize(Payload(joint, 1), funcBAS, 1, 1, &addRot.y, tol, iterFac, factor, eps);
+					minimize(Payload(joint, 2), funcBAS, 1, 1, &addRot.z, tol, iterFac, factor, eps);
 				}
 				else {
 					//minimizeSteepestDesc(&Payload(joint, 0), funcBAS, 1, 1, &addRot.x);
@@ -375,7 +375,7 @@ namespace osf
 				double addAngle = 0;
 				
 				if (i == 0) {
-					minimize(&Payload(joint, 0), funcHinge, 1, 1, &addAngle, tol, iterFac, factor, eps);
+					minimize(Payload(joint, 0), funcHinge, 1, 1, &addAngle, tol, iterFac, factor, eps);
 				}
 				else {
 					//minimizeSteepestDesc(&Payload(joint, 0), funcHinge, 1, 1, &addAngle);
@@ -602,7 +602,7 @@ namespace osf
 		return info;
 	}
 	
-	int SkeletonFitting::minimize(void* p, minpack_func_mn fcn, int m, int n, double* vals, double tol, int iterFac, double factor, double eps)
+	int SkeletonFitting::minimize(Payload p, minpack_func_mn fcn, int m, int n, double* vals, double tol, int iterFac, double factor, double eps)
 	{
 		double* fvec = new double[m];
 		
@@ -636,7 +636,7 @@ namespace osf
 		mode = 1;
 		nprint = 0;
 		mp5n = m + n * 5;
-		info = lmdif(fcn, p, m, n, &vals[1], &fvec2[1], ftol, xtol, gtol, maxfev,
+		info = lmdif(fcn, (void*)&p, m, n, &vals[1], &fvec2[1], ftol, xtol, gtol, maxfev,
 			epsfcn, &wa2[1], mode, factor, nprint, &nfev, &wa2[mp5n + 
 			1], m, &iwa2[1], &wa2[n + 1], &wa2[(n << 1) + 1], &wa2[n * 3 + 1], 
 			&wa2[(n << 2) + 1], &wa2[n * 5 + 1]);

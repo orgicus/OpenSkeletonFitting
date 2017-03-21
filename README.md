@@ -64,8 +64,10 @@ The library has been successfully tested on Microsoft Windows 7, 8 and on MacOS 
 ## On MacOS X.
 
 - Install boost libraries
-- Create project files using CMake from CMakeLists.txt
+- Install CMinPack via `brew install cminpack`
+- Create project files using CMake from CMakeLists.txt using the brew installed cmin path: `/usr/local/Cellar/cminpack/1.3.4/share/cmake/Modules`
 - build
+- **Note**: Currently there is a large number of libraries linked that need to be improved. On OSX the executables do not currently work! Build does, but it's WIP!
 
 # License
 

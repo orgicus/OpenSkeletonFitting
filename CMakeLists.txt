@@ -3,15 +3,10 @@ project(OpenSkeletonFitting)
 include_directories("${PROJECT_BINARY_DIR}")
 
 IF(APPLE)
-	include_directories("/opt/local/include/")
+	include_directories("/usr/local/include/")
 ENDIF(APPLE)
 
 # NOTE: what about precompiled headers?
-
-# add CMinPack library
-include_directories("${PROJECT_SOURCE_DIR}/CMinPack")
-add_subdirectory(CMinPack)
-set(PROJECTLIBS ${PROJECTLIBS} cminpack)
 
 # add OpenSF library
 include_directories("${PROJECT_SOURCE_DIR}/OpenSF")

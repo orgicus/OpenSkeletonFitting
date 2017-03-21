@@ -60,6 +60,17 @@ namespace osf
 		void setTechnique(MinimizationTechnique);
 		
 	private:
+		// This struct is passed to the energy functions to avoid multiple functions for
+		// every parameter. The member axis specifies, which parameter to evaluate. [12/19/2011 Norman]
+		struct Payload {
+			Joint* joint;
+			int axis;
+
+			Payload(Joint* j, int a) {
+				joint = j;
+				axis = a;
+			}
+		};
 		// Simple minimization
 		typedef void (*JointCallback)(Joint*, void*, double);
 		void updateIK(Joint*);
@@ -80,22 +91,11 @@ namespace osf
 		static int funcBAS(void*, int, int, const double*, double*, int);
 		static int funcHinge(void*, int, int, const double*, double*, int);
 		int minimizeSimple(void*, minpack_func_mn, int, int, double*, double tol = 0.);
-		int minimize(void*, minpack_func_mn, int, int, double*, double tol = 0., int iterFac = 200,
-			double factor = 100., double eps = 0.);
+		int minimize(Payload p, minpack_func_mn fcn, int m, int n, double* vals, double tol = 0., int iterFac = 200, double factor = 100., double eps = 0.);
 
 		int minimizeSteepestDesc(void*, minpack_func_mn, int, int, double*);
 		
-		// This struct is passed to the energy functions to avoid multiple functions for
-		// every parameter. The member axis specifies, which parameter to evaluate. [12/19/2011 Norman]
-		struct Payload {
-			Joint* joint;
-			int axis;
-
-			Payload(Joint* j, int a) {
-				joint = j;
-				axis = a;
-			}
-		};
+		
 		
 		Joint*	m_rootJoint;
 		MinimizationTechnique m_technique;
