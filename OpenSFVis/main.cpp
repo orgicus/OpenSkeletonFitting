@@ -110,11 +110,11 @@ int main(int argc,char** argv)
 		
 		// init system
 		myOSF.prepare();
-		//*/
+		
 
 		// create visualization objects
 		Visualization2d vis2d(input, seg, feat, fitting);
-		Visualization3d vis3d(input, seg, feat, fitting, cv::Size(800, 600));
+		// Visualization3d vis3d(input, seg, feat, fitting, cv::Size(800, 600));
 		
 		//vis2d.recordDepthMap("rec_depthmap.avi");
 		//vis2d.recordSegmentation("rec_segmentation.avi");
@@ -122,7 +122,7 @@ int main(int argc,char** argv)
 		//vis2d.recordSkeleton("rec_skeleton.avi", 0, 15);
 
 		vis2d.init();
-		vis3d.init();
+		// vis3d.init();
 
 		// main loop
 		bool terminate = false;
@@ -143,21 +143,21 @@ int main(int argc,char** argv)
 			terminate |= vis2d.draw(cvPaused, cvStep);
 			
 			// draw 3d
-			bool glPaused = paused;
-			bool glStep = step;
-			terminate |= vis3d.draw(glPaused, glStep);
+			// bool glPaused = paused;
+			// bool glStep = step;
+			// terminate |= vis3d.draw(glPaused, glStep);
 
 			bool tempPaused = paused;
 			if (cvPaused == !tempPaused)
 				paused = cvPaused;
-			if (glPaused == !tempPaused)
-				paused = glPaused;
+			// if (glPaused == !tempPaused)
+			// 	paused = glPaused;
 			
 			bool tempStep = step;
 			if (cvStep == !tempStep)
 				step = cvStep;
-			if (glStep == !tempStep)
-				step = glStep;
+			// if (glStep == !tempStep)
+			// 	step = glStep;
 		} while (!terminate);
 	}
 	catch (Exception& e) {

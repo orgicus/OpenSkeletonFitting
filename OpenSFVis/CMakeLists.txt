@@ -3,11 +3,11 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 find_library(OpenNI REQUIRED)
 # sorta hacky
 include_directories(${OpenNI}/../include/ni)
-set(GLFW_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/Externals/include)
-set(GLFW_LIB_DIR ${PROJECT_SOURCE_DIR}/Externals/lib)
+# set(GLFW_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/Externals/include)
+# set(GLFW_LIB_DIR ${PROJECT_SOURCE_DIR}/Externals/lib)
 
-include_directories(${GLFW_INCLUDE_DIR})
-link_directories(${GLFW_LIB_DIR})
+# include_directories(${GLFW_INCLUDE_DIR})
+# link_directories(${GLFW_LIB_DIR})
 
 IF(APPLE)
 	link_directories(/usr/local/lib)
@@ -18,12 +18,12 @@ ENDIF(APPLE)
 set(SOURCEFILES
 	main.cpp
 	Visualization2d.cpp
-	Visualization3d.cpp
+# 	Visualization3d.cpp
 )
 
 set(HEADERFILES
 	Visualization2d.h
-	Visualization3d.h
+# 	Visualization3d.h
 )
 
 find_package(Boost COMPONENTS system filesystem REQUIRED)
@@ -33,7 +33,8 @@ add_executable(OpenSFVis ${SOURCEFILES} ${HEADERFILES})
 target_link_libraries(OpenSFVis ${PROJECTLIBS})
 
 #add external libraries
-target_link_libraries(OpenSFVis flann GLFW openNI)
+# target_link_libraries(OpenSFVis flann GLFW openNI)
+target_link_libraries(OpenSFVis flann openNI)
 
 IF(APPLE)
 	target_link_libraries(OpenSFVis ${OpenGL_LIBRARY})
