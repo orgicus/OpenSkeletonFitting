@@ -33,15 +33,29 @@
 using namespace std;
 using namespace osf;
 
-int main()
+int main(int argc, char** argv)
 {
 	try {
 		System myOSF;
 		myOSF.init();
 		
 		// create input object
-		InputKinect* input = dynamic_cast<InputKinect*>(myOSF.createInput(InputKinect::getType()));
-		input->setRegisterDepth(true);
+		Input* input;
+		
+		if(argc > 1){
+			cout << "trying to load " << argv[1] << endl;
+			//InputPlayerONI* input = dynamic_cast<InputPlayerONI*>(myOSF.createInput(InputPlayerONI::getType()));
+			input = dynamic_cast<InputPlayerONI*>(myOSF.createInput(InputPlayerONI::getType()));
+			((InputPlayerONI*)input)->setFilename(argv[1]);
+			((InputPlayerONI*)input)->setRepeat(true);
+		}else{
+			cout << "no .oni file path provided, attempting to connect to sensor via USB" << endl;
+			// create input object
+			// InputKinect* input = dynamic_cast<InputKinect*>(myOSF.createInput(InputKinect::getType()));
+			input = dynamic_cast<InputKinect*>(myOSF.createInput(InputKinect::getType()));
+			((InputKinect*)input)->setRegisterDepth(true);
+		}
+		
 
 		// resize for better performance
 		input->setResizing(cv::Size(320, 240));
@@ -83,9 +97,9 @@ int main()
 			fitting->setFitCCDMinimzeSize(true);
 
 			// select skeleton to track
-			fitting->createSkeleton<SkeletonUpperBody>();
+			// fitting->createSkeleton<SkeletonUpperBody>();
 			//fitting->createSkeleton<SkeletonLowerBody>();
-			//fitting->createSkeleton<SkeletonFullBody>();
+			fitting->createSkeleton<SkeletonFullBody>();
 			//fitting->createSkeleton<SkeletonSimple>();
 			//fitting->createSkeleton<SkeletonManipulator>();
 		}

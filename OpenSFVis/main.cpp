@@ -35,23 +35,32 @@
 using namespace std;
 using namespace osf;
 
-int main()
+int main(int argc,char** argv)
 {
 	try {
 		System myOSF;
 		myOSF.init();
 		
-		// create input object
-		InputKinect* input = dynamic_cast<InputKinect*>(myOSF.createInput(InputKinect::getType()));
-		input->setRegisterDepth(true);
-		input->setMotorAngle(10);
-		//input->startRecording("..\\..\\Data\\new_scene.oni");
+		Input* input;
 		
-		/*InputPlayerONI* input = dynamic_cast<InputPlayerONI*>(myOSF.createInput(InputPlayerONI::getType()));
-		input->setFilename("..\\..\\Data\\scene03.oni");
-		input->setRepeat(true);*/
-		//input->setPauseMode(true);
-
+		if(argc > 1){
+			cout << "trying to load " << argv[1] << endl;
+			//InputPlayerONI* input = dynamic_cast<InputPlayerONI*>(myOSF.createInput(InputPlayerONI::getType()));
+			input = dynamic_cast<InputPlayerONI*>(myOSF.createInput(InputPlayerONI::getType()));
+			((InputPlayerONI*)input)->setFilename(argv[1]);
+			// ((InputPlayerONI*)input)->setRepeat(true);
+			// input->setPauseMode(true);
+			// input->setRepeat(true);
+		}else{
+			cout << "no .oni file path provided, attempting to connect to sensor via USB" << endl;
+			// create input object
+			// InputKinect* input = dynamic_cast<InputKinect*>(myOSF.createInput(InputKinect::getType()));
+			input = dynamic_cast<InputKinect*>(myOSF.createInput(InputKinect::getType()));
+			((InputKinect*)input)->setRegisterDepth(true);
+			//input->setMotorAngle(10);
+			//input->startRecording("..\\..\\Data\\new_scene.oni");
+		}
+		
 		// resize for better performance
 		input->setResizing(cv::Size(320, 240));
 
@@ -101,6 +110,7 @@ int main()
 		
 		// init system
 		myOSF.prepare();
+		//*/
 
 		// create visualization objects
 		Visualization2d vis2d(input, seg, feat, fitting);
