@@ -67,12 +67,11 @@ The library has been successfully tested on Microsoft Windows 7, 8 and on MacOS 
 - Install CMinPack via `brew install cminpack`
 - Create project files using CMake from CMakeLists.txt using the brew installed cmin path: `/usr/local/Cellar/cminpack/1.3.4/share/cmake/Modules`
 - build
+- Make a folder sibling to the repo named `Bin` and another within named `x86-Release`, then copy `libOpenNI.dylib` inside.
+The idea is to have build/OpenSFVis able to load `../../Bin/x86-Release/libOpenNI.dylib`
 - **Note**: Currently there is a large number of libraries linked that need to be improved. 
 On OSX the executables sort of works but it's WIP so may not work as expected yet.
-Please follow this steps before running:
-1. Copy `Externals/lib/libglfw.dylib` to `build/OpenSFVis`
-2. Make a folder sibling to the repo named `Bin` and another within named `x86-Release`, then copy `libOpenNI.dylib` inside.
-The idea is to have build/OpenSFVis able to load `../../Bin/x86-Release/libOpenNI.dylib`
+There may be issues with opening a kinect/asus sensor, but reading .oni files should work.
 
 # License
 
