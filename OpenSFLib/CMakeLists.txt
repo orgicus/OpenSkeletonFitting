@@ -1,5 +1,5 @@
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${PROJECT_SOURCE_DIR}/Externals/include)
+# include_directories(${PROJECT_SOURCE_DIR}/Externals/include)
 
 set(SOURCEFILES
 	System.cpp

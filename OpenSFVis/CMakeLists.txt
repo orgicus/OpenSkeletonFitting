@@ -1,7 +1,13 @@
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${PROJECT_SOURCE_DIR}/Externals/include)
-include_directories(${PROJECT_SOURCE_DIR}/Externals/include/openni)
-link_directories(${PROJECT_SOURCE_DIR}/Externals/lib)
+
+find_library(OpenNI REQUIRED)
+# sorta hacky
+include_directories(${OpenNI}/../include/ni)
+set(GLFW_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/Externals/include)
+set(GLFW_LIB_DIR ${PROJECT_SOURCE_DIR}/Externals/lib)
+
+include_directories(${GLFW_INCLUDE_DIR})
+link_directories(${GLFW_LIB_DIR})
 
 IF(APPLE)
 	link_directories(/usr/local/lib)

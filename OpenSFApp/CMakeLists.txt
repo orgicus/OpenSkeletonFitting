@@ -1,7 +1,8 @@
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${PROJECT_SOURCE_DIR}/Externals/include)
-include_directories(${PROJECT_SOURCE_DIR}/Externals/include/openni)
-link_directories(${PROJECT_SOURCE_DIR}/Externals/lib)
+
+find_library(OpenNI REQUIRED)
+# sorta hacky
+include_directories(${OpenNI}/../include/ni)
 
 #only on mac
 IF(APPLE)
@@ -30,11 +31,11 @@ set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 set(CMAKE_EXE_LINKER_FLAGS "-lcminpack")
 
 target_link_libraries(OpenSFApp
-	opencv_calib3d231
-	opencv_core231
-	opencv_highgui231
-	opencv_imgproc231
-	opencv_video231
+	opencv_calib3d
+	opencv_core
+	opencv_highgui
+	opencv_imgproc
+	opencv_video
 	boost_thread-mt
 	${Boost_FILESYSTEM_LIBRARY}
   	${Boost_SYSTEM_LIBRARY}

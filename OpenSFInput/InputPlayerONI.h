@@ -24,7 +24,7 @@
 
 #pragma warning(disable:4005)
 #include <XnCppWrapper.h>
-#include <XnUSB.h> 
+#include <XnUSB.h>
 #pragma warning(default:4005)
 
 namespace osf
