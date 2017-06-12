@@ -73,6 +73,11 @@ The idea is to have build/OpenSFVis able to load `../../Bin/x86-Release/libOpenN
 On OSX the executables sort of works but it's WIP so may not work as expected yet.
 There may be issues with opening a kinect/asus sensor, but reading .oni files should work.
 
+## TODO
+
+- Update GLFW
+- Update OpenNI
+
 # License
 
 This library is licensed under the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.en.html, "GPLv3").

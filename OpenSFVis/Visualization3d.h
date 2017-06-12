@@ -22,6 +22,7 @@
 #pragma once
 #include <opencv2/opencv.hpp>
 #include "../OpenSFitting/Joint.h"
+#include <GLFW/glfw3.h>
 
 namespace osf
 {
@@ -51,6 +52,7 @@ namespace osf
 		void renderOrigin(float width = 1.0f);
 		void renderScene();
 		void renderBone(Joint*, float);
+		void perspectiveGL( GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar );
 		
 		Input* m_input;
 		Segmentation* m_segmentation;
@@ -76,6 +78,7 @@ namespace osf
 		Joint* m_rootJoint;
 	
 		// OpenGL
+		GLFWwindow* window;
 		std::vector<cv::Point3f> m_labelColors;
 		cv::Size m_windowSize;
 		cv::Point3f m_camPos;

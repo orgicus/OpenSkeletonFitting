@@ -30,10 +30,12 @@
 #include "../OpenSFitting/Fitting.h"
 #include "../OpenSF/Exception.h"
 #include "../OpenSF/Utils.h"
-#include <GL/glfw.h>
+// #include <GL/glfw.h>
+// #include <GLFW/glfw3.h>
 
 #ifdef __APPLE__ & __MACH__
 #include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
 #endif
 
 namespace osf
@@ -63,6 +65,7 @@ namespace osf
 		m_radius = 2.5f;
 		m_lastMousePos = cv::Point(0, 0);
 		m_lastMouseWheel = 0;
+		//TODO: update m_displayList
 		m_displayList = 0;
 		m_fixedLookAt = true;
 		m_spacePressed = false;
@@ -74,8 +77,9 @@ namespace osf
 
 	Visualization3d::~Visualization3d(void)
 	{
-		glDeleteLists(m_displayList, 1);
-		glfwCloseWindow();
+		// glDeleteLists(m_displayList, 1);
+		//TODO update
+		// glfwCloseWindow();
 		glfwTerminate();
 	}
 
@@ -113,15 +117,16 @@ namespace osf
 
 		// init OpenGL
 		glfwInit();
-		glfwOpenWindow(m_windowSize.width, m_windowSize.height, 8, 8, 8, 0, 16, 0, GLFW_WINDOW);
-		glfwSetWindowTitle("Skeleton 3D");
+		window = glfwCreateWindow(m_windowSize.width, m_windowSize.height, "Skeleton 3D", NULL, NULL);
+		
 
 		glEnable(GL_DEPTH_TEST);
-		
+		/*
 		// create a display list containing a box
 		m_displayList = glGenLists(1);
 		if (!m_displayList)
-			throw Exception("could not create display list");
+			cout << "could not create display list" << endl;
+			// throw Exception("could not create display list");
 		glNewList(m_displayList, GL_COMPILE);
 
 		glBegin(GL_QUADS);
@@ -157,7 +162,7 @@ namespace osf
 		glEnd();
 
 		glEndList();
-
+		//*/
 		// init random color list
 		const int labelSize = 256;
 		m_labelColors.resize(labelSize);
@@ -186,27 +191,39 @@ namespace osf
 		glfwPollEvents();
 		
 		// process keyboard
-		if (glfwGetKey(GLFW_KEY_SPACE) == GLFW_PRESS && !m_spacePressed) {
+		if (glfwGetKey(window,GLFW_KEY_SPACE) == GLFW_PRESS && !m_spacePressed) {
 			m_spacePressed = true;
 			if (!paused)
 				paused = true;
 			else
 				paused = false;
 		}
-		else if (glfwGetKey(GLFW_KEY_SPACE) == GLFW_RELEASE && m_spacePressed)
+		else if (glfwGetKey(window,GLFW_KEY_SPACE) == GLFW_RELEASE && m_spacePressed)
 			m_spacePressed = false;
 		
-		if (glfwGetKey(GLFW_KEY_ENTER) == GLFW_PRESS && !m_enterPressed) {
+		if (glfwGetKey(window,GLFW_KEY_ENTER) == GLFW_PRESS && !m_enterPressed) {
 			m_enterPressed = true;
 			step = true;
 		}
-		else if (glfwGetKey(GLFW_KEY_ENTER) == GLFW_RELEASE && m_enterPressed)
+		else if (glfwGetKey(window,GLFW_KEY_ENTER) == GLFW_RELEASE && m_enterPressed)
 			m_enterPressed = false;
 		
-		if (glfwGetKey(GLFW_KEY_ESC) == GLFW_PRESS)
+		if (glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			return true;
 
 		return false;
+	}
+	void Visualization3d::perspectiveGL( GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar )
+	//via http://stackoverflow.com/questions/12943164/replacement-for-gluperspective-with-glfrustrum
+	{
+	    const GLdouble pi = 3.1415926535897932384626433832795;
+	    GLdouble fW, fH;
+
+	    //fH = tan( (fovY / 2) / 180 * pi ) * zNear;
+	    fH = tan( fovY / 360 * pi ) * zNear;
+	    fW = fH * aspect;
+
+	    glFrustum( -fW, fW, -fH, fH, zNear, zFar );
 	}
 
 	void Visualization3d::render()
@@ -236,7 +253,7 @@ namespace osf
 		glRotatef(180, 0, 0, 1);
 
 		// Set the camera
-		gluPerspective(50.0, (float)m_windowSize.width / (float)m_windowSize.height, 0.1, 1000.0);
+		gluPerspective(50.0, (GLdouble)m_windowSize.width / (GLdouble)m_windowSize.height, 0.1, 1000.0);
 
 		gluLookAt(m_camPos.x, m_camPos.y, m_camPos.z,
 			m_camLookAt.x, m_camLookAt.y, m_camLookAt.z,
@@ -257,33 +274,33 @@ namespace osf
 		glPopMatrix();
 		
 		glPopMatrix();
-		glfwSwapBuffers();
+		// glfwSwapBuffers(window);
 	}
 	
 	void Visualization3d::processMouse()
 	{
-		int x = 0, y = 0;
-		glfwGetMousePos(&x, &y);
+		double x = 0, y = 0;
+		glfwGetCursorPos(window,&x, &y);
 		
 		// store last position for mouse speed calculation
-		if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_1) == GLFW_PRESS ||
-			glfwGetMouseButton(GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
+		if (glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_1) == GLFW_PRESS ||
+			glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
 				if (m_lastMousePos.x == 0 && m_lastMousePos.y == 0)
 					m_lastMousePos = cv::Point(x, y);
 		}
-		else if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_1) == GLFW_RELEASE &&
-			glfwGetMouseButton(GLFW_MOUSE_BUTTON_2) == GLFW_RELEASE) {
+		else if (glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_1) == GLFW_RELEASE &&
+				 glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_2) == GLFW_RELEASE) {
 				m_lastMousePos = cv::Point(0, 0);
 		}
 
 		// rotate on left click
-		if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
+		if (glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
 			m_theta -= (x - m_lastMousePos.x) * 1.0f;
 			m_phi -= (y - m_lastMousePos.y) * 1.0f;
 		}
 
 		// move on right click
-		if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
+		if (glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
 			if (m_fixedLookAt)
 				m_fixedLookAt = false;
 
@@ -304,6 +321,8 @@ namespace osf
 		}
 
 		// zoom with mouse wheel
+		//TODO update to mouse wheel callback
+		/*
 		int mouseWheel = glfwGetMouseWheel();
 
 		int newVal = mouseWheel - m_lastMouseWheel;
@@ -315,7 +334,7 @@ namespace osf
 			m_radius = 15.0f;
 
 		m_lastMouseWheel = mouseWheel;
-
+		//*/
 		// rotate view around look at position
 		rotateCameraSphere(m_theta, m_phi);
 
@@ -476,7 +495,7 @@ namespace osf
 						glTranslated(point.x, point.y, point.z);
 						glScalef(relScale, relScale, relScale);
 						glColor3f(color[0], color[1], color[2]);
-						glCallList(m_displayList);
+						// glCallList(m_displayList);
 						glPopMatrix();
 					}
 				}
@@ -528,7 +547,8 @@ namespace osf
 				gluSphere(m_sphere, 0.015f, 10, 10);
 				glPopMatrix();
 			}
-		}*/
+		}
+		//*/
 
 		if (m_rootJoint && m_fitting->isTracking()) {
 			renderBone(m_rootJoint, (float)m_rootJoint->getBoneScaleFactor());

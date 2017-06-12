@@ -3,11 +3,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 find_library(OpenNI REQUIRED)
 # sorta hacky
 include_directories(${OpenNI}/../include/ni)
-# set(GLFW_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/Externals/include)
-# set(GLFW_LIB_DIR ${PROJECT_SOURCE_DIR}/Externals/lib)
 
-# include_directories(${GLFW_INCLUDE_DIR})
-# link_directories(${GLFW_LIB_DIR})
+find_library(glfw3 REQUIRED)
 
 IF(APPLE)
 	link_directories(/usr/local/lib)
@@ -18,12 +15,12 @@ ENDIF(APPLE)
 set(SOURCEFILES
 	main.cpp
 	Visualization2d.cpp
-# 	Visualization3d.cpp
+	Visualization3d.cpp
 )
 
 set(HEADERFILES
 	Visualization2d.h
-# 	Visualization3d.h
+	Visualization3d.h
 )
 
 find_package(Boost COMPONENTS system filesystem REQUIRED)
@@ -37,13 +34,12 @@ target_link_libraries(OpenSFVis ${PROJECTLIBS})
 target_link_libraries(OpenSFVis flann openNI)
 
 IF(APPLE)
-	target_link_libraries(OpenSFVis ${OpenGL_LIBRARY})
+	target_link_libraries(OpenSFVis ${OpenGL_LIBRARY} glfw3)
 ENDIF(APPLE)
 
 find_package(CMinpack REQUIRED)
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 set(CMAKE_EXE_LINKER_FLAGS "-lcminpack")
-
 
 target_link_libraries(OpenSFVis
 	opencv_calib3d
@@ -53,4 +49,5 @@ target_link_libraries(OpenSFVis
 	opencv_video
 	boost_thread-mt
 	${Boost_FILESYSTEM_LIBRARY}
-  	${Boost_SYSTEM_LIBRARY})
+  	${Boost_SYSTEM_LIBRARY}
+  	)

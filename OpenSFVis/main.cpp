@@ -35,6 +35,11 @@
 using namespace std;
 using namespace osf;
 
+void on_trackbar( int, void* )
+{
+
+}
+
 int main(int argc,char** argv)
 {
 	try {
@@ -99,13 +104,19 @@ int main(int argc,char** argv)
 			fitting->setFitCCDMaxIter(1);
 			fitting->setFitCCDChangeThresh(0.001);
 			fitting->setFitCCDMinimzeSize(true);
-		
+			
 			// select skeleton to track
-			fitting->createSkeleton<SkeletonUpperBody>();
-			//fitting->createSkeleton<SkeletonLowerBody>();
-			//fitting->createSkeleton<SkeletonFullBody>();
-			//fitting->createSkeleton<SkeletonSimple>();
-			//fitting->createSkeleton<SkeletonManipulator>();
+			if(argc > 2){
+				if(argv[2][0] == '1')  fitting->createSkeleton<SkeletonUpperBody>();
+				if(argv[2][0] == '2')  fitting->createSkeleton<SkeletonLowerBody>();
+				if(argv[2][0] == '3')  fitting->createSkeleton<SkeletonFullBody>();
+				if(argv[2][0] == '4')  fitting->createSkeleton<SkeletonSimple>();
+				if(argv[2][0] == '5')  fitting->createSkeleton<SkeletonManipulator>();
+			}else{
+				cout << "no skeleton tracking option provided (1-5), using SkeletonManipulator as default" << endl;
+				fitting->createSkeleton<SkeletonManipulator>();
+			}
+			
 		}
 		
 		// init system
@@ -124,6 +135,24 @@ int main(int argc,char** argv)
 		vis2d.init();
 		// vis3d.init();
 
+		/*
+		seg
+		m_threshold = 0.15f;
+		m_erodingSize = 3;
+		m_medianBlurSize = 3;
+		m_contoursFactor = 300.0f;
+
+		void setThreshold(float);
+		void setErodingSize(int);
+		void setMedianBlurSize(int);
+		void setContoursFactor(float);
+		float getThreshold() const;
+		int getErodingSize() const;
+		int getMedianBlurSize() const;
+		float getContoursFactor() const;
+		*/
+		// createTrackbar("DepthMap", "result", &templScale, 200,on_trackbar);
+
 		// main loop
 		bool terminate = false;
 		bool paused = false;
@@ -141,23 +170,24 @@ int main(int argc,char** argv)
 			bool cvPaused = paused;
 			bool cvStep = step;
 			terminate |= vis2d.draw(cvPaused, cvStep);
-			
+			/*
 			// draw 3d
-			// bool glPaused = paused;
-			// bool glStep = step;
-			// terminate |= vis3d.draw(glPaused, glStep);
+			bool glPaused = paused;
+			bool glStep = step;
+			terminate |= vis3d.draw(glPaused, glStep);
 
 			bool tempPaused = paused;
 			if (cvPaused == !tempPaused)
 				paused = cvPaused;
-			// if (glPaused == !tempPaused)
-			// 	paused = glPaused;
+			if (glPaused == !tempPaused)
+				paused = glPaused;
 			
 			bool tempStep = step;
 			if (cvStep == !tempStep)
 				step = cvStep;
-			// if (glStep == !tempStep)
-			// 	step = glStep;
+			if (glStep == !tempStep)
+				step = glStep;
+			//*/
 		} while (!terminate);
 	}
 	catch (Exception& e) {
